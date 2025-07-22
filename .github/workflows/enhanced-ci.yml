@@ -1,0 +1,218 @@
+name: Enhanced Gemini CLI CI/CD
+
+on:
+  push:
+    branches: [main, release, 'feature/**']
+    tags: ['v*']
+  pull_request:
+    branches: [main, release]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+# Environment configurations
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_BUILDKIT: 1
+
+# Global defaults for all jobs
+defaults:
+  run:
+    shell: bash
+    working-directory: ./
+
+jobs:
+  # Linting and Code Quality
+  lint-and-format:
+    name: Lint and Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint:ci
+
+      - name: Check formatting
+        run: |
+          npm run format
+          git diff --exit-code
+
+      - name: Run type check
+        run: npm run typecheck
+
+  # Unit and Integration Tests
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    needs: lint-and-format
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x, 24.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - node-version: 20.x
+            cache-key: node-20
+          - node-version: 22.x
+            cache-key: node-22
+          - node-version: 24.x
+            cache-key: node-24
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-${{ matrix.cache-key }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.cache-key }}-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-node${{ matrix.node-version }}
+          path: |
+            **/junit.xml
+            **/coverage
+            **/test-results
+
+  # Security Scanning
+  security-scan:
+    name: Security Scan
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run dependency check
+        uses: actions/dependency-review-action@v4
+
+  # Build and Publish
+  build-and-publish:
+    name: Build and Publish
+    needs: [test, security-scan]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Publish to npm
+        if: github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --access public
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## What's Changed
+            
+            ### New Features
+            - 
+            
+            ### Bug Fixes
+            - 
+            ### Dependencies
+            - 
+          draft: false
+          prerelease: false
+
+  # Notifications
+  notify:
+    name: Notify Status
+    needs: [test, security-scan, build-and-publish]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: '#FF0000'
+          SLACK_TITLE: 'Workflow failed: ${{ github.workflow }}'
+          SLACK_MESSAGE: 'Job ${{ github.job }} failed in ${{ github.repository }}'
+          MSG_MINIMAL: true
+
+      - name: Notify Slack on Success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: '#00FF00'
+          SLACK_TITLE: 'Workflow succeeded: ${{ github.workflow }}'
+          SLACK_MESSAGE: 'All jobs completed successfully in ${{ github.repository }}'
+          MSG_MINIMAL: true

@@ -1,5 +1,24 @@
 # Gemini CLI
 
+[![Gemini CLI CI](https://github.com/GlacierEQ/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/GlacierEQ/gemini-cli/actions/workflows/ci.yml)
+[![Enhanced CI/CD](https://github.com/GlacierEQ/gemini-cli/actions/workflows/enhanced-ci.yml/badge.svg)](https://github.com/GlacierEQ/gemini-cli/actions/workflows/enhanced-ci.yml)
+[![Self-Hosted Runner](https://img.shields.io/badge/self--hosted-runner-success)](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners)
+
+![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+
+This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
+tools, understands your code and accelerates your workflows.
+
+With the Gemini CLI you can:
+
+- Query and edit large codebases in and beyond Gemini's 1M token context window.
+- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
+- Automate operational tasks, like querying pull requests or handling complex rebases.
+- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
+  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
+- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
+  tool, built into Gemini.
+
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 
 ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
@@ -16,6 +35,131 @@ With the Gemini CLI you can:
   Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
 - Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
   tool, built into Gemini.
+
+## Table of Contents
+
+- [Quickstart](#quickstart)
+- [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running Tests](#running-tests)
+- [CI/CD Pipeline](#cicd-pipeline)
+  - [Overview](#overview)
+  - [Workflow Details](#workflow-details)
+  - [Self-Hosted Runner Setup](#self-hosted-runner-setup)
+  - [Environment Variables](#environment-variables)
+  - [Secrets Management](#secrets-management)
+- [Contributing](#contributing)
+- [License](#license)
+
+## CI/CD Pipeline
+
+### Overview
+
+This project uses GitHub Actions for CI/CD with an enhanced workflow that includes:
+
+- Automated testing across multiple Node.js versions and operating systems
+- Security scanning and dependency checks
+- Automated publishing to npm
+- GitHub Releases integration
+- Slack notifications
+- Support for self-hosted runners
+
+### Workflow Details
+
+The main workflow is defined in `.github/workflows/enhanced-ci.yml` and includes the following jobs:
+
+1. **Lint and Format**
+   - Checks code formatting
+   - Runs linters
+   - Verifies TypeScript types
+
+2. **Test**
+   - Runs unit and integration tests
+   - Tests across multiple Node.js versions (20.x, 22.x, 24.x)
+   - Tests on multiple operating systems (Ubuntu, Windows, macOS)
+   - Generates test coverage reports
+
+3. **Security Scan**
+   - Runs npm audit
+   - Performs dependency review
+   - Checks for known vulnerabilities
+
+4. **Build and Publish**
+   - Builds the project
+   - Publishes to npm (on release)
+   - Creates GitHub releases (on tag)
+
+### Self-Hosted Runner Setup
+
+For improved performance and control, you can set up self-hosted runners. We provide a PowerShell script to automate the setup on Windows machines.
+
+#### Prerequisites
+
+- Windows 10/11 or Windows Server 2019/2022
+- PowerShell 5.1 or later
+- Administrator privileges
+- GitHub Personal Access Token (PAT) with `admin:org` scope
+
+#### Installation
+
+1. **Clone the repository** (if not already done):
+   ```powershell
+   git clone https://github.com/GlacierEQ/gemini-cli.git
+   cd gemini-cli
+   ```
+
+2. **Set your GitHub PAT** (replace `YOUR_GITHUB_PAT` with your actual token):
+   ```powershell
+   $env:GITHUB_PAT = 'YOUR_GITHUB_PAT'
+   ```
+
+3. **Run the setup script** (as Administrator):
+   ```powershell
+   Set-ExecutionPolicy Bypass -Scope Process -Force
+   .\scripts\setup-self-hosted-runner.ps1 -RunnerName "my-runner" -RunnerLabels "windows,self-hosted,x64"
+   ```
+
+#### Configuration Options
+
+- `-RunnerName`: Name for the runner (default: computer name + "-runner")
+- `-RunnerGroup`: Runner group to add the runner to (default: "Default")
+- `-RunnerLabels`: Comma-separated list of labels (default: "self-hosted,Windows,X64")
+- `-RunnerWorkFolder`: Working directory for the runner (default: "_work")
+- `-ConfigureOnly`: Only configure an existing runner (don't download)
+- `-Uninstall`: Remove the runner and clean up
+
+#### Verifying the Installation
+
+1. Check the runner service status:
+   ```powershell
+   Get-Service -Name "GitHubActionsRunner"
+   ```
+
+2. View runner logs:
+   ```
+   Get-Content -Path "C:\actions-runner\_diag\*.log" -Tail 50
+   ```
+
+### Environment Variables
+
+The following environment variables are used by the CI/CD pipeline:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NODE_VERSION` | No | Default Node.js version (default: 20) |
+| `REGISTRY` | No | Container registry URL (default: ghcr.io) |
+| `IMAGE_NAME` | No | Container image name (default: repository name) |
+
+### Secrets Management
+
+The following secrets must be configured in your GitHub repository:
+
+| Secret | Required For | Description |
+|--------|--------------|-------------|
+| `NPM_TOKEN` | Publishing | npm authentication token |
+| `GITHUB_TOKEN` | Auto-generated | GitHub token for workflow permissions |
+| `SLACK_WEBHOOK_URL` | Notifications | Slack webhook URL for notifications |
 
 ## Quickstart
 
