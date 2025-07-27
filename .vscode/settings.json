@@ -1,3 +1,6 @@
 {
-  "typescript.tsserver.experimental.enableProjectDiagnostics": true
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "diffEditor.renderSideBySide": false,
+  "diffEditor.experimental.showMoves": true,
+  "scm.diffDecorationsGutterAction": "diff"
 }
