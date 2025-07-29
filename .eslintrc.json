@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "eslint:recommended"
+  ],
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "complexity": [
+      "error",
+      10
+    ],
+    "max-lines-per-function": [
+      "error",
+      50
+    ],
+    "no-duplicate-code": "error"
+  }
+}

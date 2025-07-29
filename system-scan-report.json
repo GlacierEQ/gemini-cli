@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-07-29T05:25:43.086Z",
+  "scanner": "SYSTEM_SCANNER",
+  "summary": {
+    "files": 1456,
+    "directories": 102,
+    "codeFiles": 1040,
+    "totalLines": 435147,
+    "maintainabilityIndex": 91,
+    "securityRisk": "HIGH",
+    "performanceScore": 0
+  },
+  "improvements": [
+    {
+      "category": "structure",
+      "priority": "medium",
+      "description": "Consider breaking down large project into modules",
+      "impact": "maintainability"
+    },
+    {
+      "category": "dependencies",
+      "priority": "high",
+      "description": "Update 8 outdated dependencies",
+      "impact": "security"
+    },
+    {
+      "category": "code",
+      "priority": "high",
+      "description": "Reduce code complexity through refactoring",
+      "impact": "maintainability"
+    },
+    {
+      "category": "security",
+      "priority": "critical",
+      "description": "Address high-risk security vulnerabilities",
+      "impact": "security"
+    },
+    {
+      "category": "performance",
+      "priority": "high",
+      "description": "Optimize performance bottlenecks",
+      "impact": "performance"
+    }
+  ],
+  "recommendations": [
+    "Implement automated testing with 80%+ coverage",
+    "Set up continuous integration pipeline",
+    "Add code quality gates with ESLint/Prettier",
+    "Implement security scanning in CI/CD",
+    "Add performance monitoring and alerting",
+    "Create comprehensive documentation",
+    "Set up dependency vulnerability scanning"
+  ]
+}
