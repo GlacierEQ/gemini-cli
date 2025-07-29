@@ -7,6 +7,8 @@
 import OperatorCore from './operator-core.js';
 import QuantumDetector from './quantum-detector.js';
 import VeritasSentinel from './veritas-sentinel.js';
+import SystemScanner from './system-scanner.js';
+import AutoImprover from './auto-improver.js';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { spawn } from 'child_process';
@@ -17,6 +19,8 @@ class MasterOrchestrator {
     this.operatorCore = new OperatorCore();
     this.quantumDetector = new QuantumDetector();
     this.veritasSentinel = new VeritasSentinel();
+    this.systemScanner = new SystemScanner();
+    this.autoImprover = new AutoImprover();
     this.status = 'READY';
     this.missions = [];
   }
@@ -57,10 +61,12 @@ class MasterOrchestrator {
       '🚀 Enhanced Gemini Query',
       '🔬 Quantum Analysis',
       '🛡️ Veritas Scan',
+      '🔍 System Scan & Analysis',
+      '🔧 Auto Improve Project',
       '⚡ Full System Enhancement',
       '📊 Generate Reports',
       '🎯 Mission Control',
-      '🔧 System Configuration',
+      '⚙️ System Configuration',
       '❌ Exit'
     ];
 
@@ -85,6 +91,12 @@ class MasterOrchestrator {
       case '🛡️ Veritas Scan':
         await this.veritasScan();
         break;
+      case '🔍 System Scan & Analysis':
+        await this.systemScan();
+        break;
+      case '🔧 Auto Improve Project':
+        await this.autoImprove();
+        break;
       case '⚡ Full System Enhancement':
         await this.fullEnhancement();
         break;
@@ -94,7 +106,7 @@ class MasterOrchestrator {
       case '🎯 Mission Control':
         await this.missionControl();
         break;
-      case '🔧 System Configuration':
+      case '⚙️ System Configuration':
         await this.systemConfiguration();
         break;
       case '❌ Exit':
@@ -253,8 +265,45 @@ class MasterOrchestrator {
     });
   }
 
+  async systemScan() {
+    console.log(chalk.blue.bold('🔍 SYSTEM SCAN & ANALYSIS'));
+    
+    const analysis = await this.systemScanner.scanProject();
+    const report = this.systemScanner.generateReport(analysis);
+    
+    console.log(chalk.green('📊 Scan Results:'));
+    console.log(`Files: ${report.summary.files}`);
+    console.log(`Code Files: ${report.summary.codeFiles}`);
+    console.log(`Total Lines: ${report.summary.totalLines}`);
+    console.log(`Maintainability: ${report.summary.maintainabilityIndex}%`);
+    console.log(`Security Risk: ${report.summary.securityRisk}`);
+    console.log(`Performance Score: ${report.summary.performanceScore}`);
+    
+    console.log(chalk.yellow(`\n💡 Found ${report.improvements.length} improvement opportunities`));
+    console.log(chalk.blue('📄 Report saved to: system-scan-report.json'));
+  }
+
+  async autoImprove() {
+    console.log(chalk.green.bold('🔧 AUTO IMPROVE PROJECT'));
+    
+    const report = await this.autoImprover.improveProject();
+    
+    console.log(chalk.green('✅ Improvements Applied:'));
+    report.applied_improvements.forEach(improvement => {
+      console.log(chalk.white(`  • ${improvement}`));
+    });
+    
+    console.log(chalk.cyan(`\n📊 Total Improvements: ${report.summary.total_improvements}`));
+    console.log(chalk.blue('📄 Report saved to: improvement-report.json'));
+    
+    console.log(chalk.yellow('\n🎯 Next Steps:'));
+    report.next_steps.forEach(step => {
+      console.log(chalk.white(`  • ${step}`));
+    });
+  }
+
   async systemConfiguration() {
-    console.log(chalk.blue.bold('🔧 SYSTEM CONFIGURATION'));
+    console.log(chalk.blue.bold('⚙️ SYSTEM CONFIGURATION'));
     
     const config = {
       models: ['gemini-pro', 'gpt-4', 'claude-3'],
