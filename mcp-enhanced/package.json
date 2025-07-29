@@ -1,0 +1,49 @@
+{
+  "name": "@operator/mcp-enhanced",
+  "version": "2.0.0-operator",
+  "description": "Military-grade Model Context Protocol library with advanced orchestration",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./core": "./core.js",
+    "./servers": "./servers.js",
+    "./tools": "./tools.js",
+    "./orchestrator": "./orchestrator.js"
+  },
+  "scripts": {
+    "test": "echo 'MCP Enhanced tests would run here'",
+    "demo": "node demo.js",
+    "benchmark": "node benchmark.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "orchestration",
+    "workflow",
+    "automation",
+    "operator",
+    "military-grade"
+  ],
+  "author": "Operator Core Systems",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "events": "^3.3.0"
+  },
+  "peerDependencies": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/operator-core/mcp-enhanced.git"
+  },
+  "bugs": {
+    "url": "https://github.com/operator-core/mcp-enhanced/issues"
+  },
+  "homepage": "https://github.com/operator-core/mcp-enhanced#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

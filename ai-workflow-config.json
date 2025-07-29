@@ -1,0 +1,38 @@
+{
+  "ai_strategies": {
+    "context_modes": [
+      "full_project_analysis",
+      "incremental_learning",
+      "pattern_recognition"
+    ],
+    "elevated_operations": {
+      "code_completion": {
+        "multi_line": true,
+        "function_generation": true,
+        "test_generation": true
+      },
+      "refactoring": {
+        "auto_optimize": true,
+        "security_scan": true,
+        "performance_boost": true
+      },
+      "debugging": {
+        "predictive_errors": true,
+        "auto_fix_suggestions": true,
+        "root_cause_analysis": true
+      }
+    },
+    "custom_behaviors": {
+      "gemini_cli_patterns": [
+        "typescript_modules",
+        "node_cli_structure",
+        "google_api_integration"
+      ],
+      "learning_focus": [
+        "your_coding_style",
+        "project_architecture",
+        "common_workflows"
+      ]
+    }
+  }
+}
