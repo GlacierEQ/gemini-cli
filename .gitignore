@@ -43,3 +43,11 @@ packages/vscode-ide-companion/*.vsix
 # Coders in Flow
 .codersinflow
 .vscode
+
+# Coders in Flow
+.venv
+.codex
+out
+*.vsix
+.claude
+CLAUDE.md
