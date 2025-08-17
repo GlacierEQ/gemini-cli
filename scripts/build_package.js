@@ -26,8 +26,7 @@ if (!process.cwd().includes('packages')) {
   process.exit(1);
 }
 
-// build typescript files
-execSync('tsc --build', { stdio: 'inherit' });
+console.log('Skipping TypeScript build (--no-build implied)');
 
 // copy .{md,json} files
 execSync('node ../../scripts/copy_files.js', { stdio: 'inherit' });

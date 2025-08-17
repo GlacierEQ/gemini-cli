@@ -9,6 +9,7 @@ import QuantumDetector from './quantum-detector.js';
 import VeritasSentinel from './veritas-sentinel.js';
 import SystemScanner from './system-scanner.js';
 import AutoImprover from './auto-improver.js';
+import KiloSetup from './kilo-setup.js';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { spawn } from 'child_process';
@@ -21,6 +22,7 @@ class MasterOrchestrator {
     this.veritasSentinel = new VeritasSentinel();
     this.systemScanner = new SystemScanner();
     this.autoImprover = new AutoImprover();
+    this.kiloSetup = new KiloSetup();
     this.status = 'READY';
     this.missions = [];
   }
@@ -63,9 +65,10 @@ class MasterOrchestrator {
       '🛡️ Veritas Scan',
       '🔍 System Scan & Analysis',
       '🔧 Auto Improve Project',
+      '🎯 Kilo Code Integration',
       '⚡ Full System Enhancement',
       '📊 Generate Reports',
-      '🎯 Mission Control',
+      '🎮 Mission Control',
       '⚙️ System Configuration',
       '❌ Exit'
     ];
@@ -97,13 +100,16 @@ class MasterOrchestrator {
       case '🔧 Auto Improve Project':
         await this.autoImprove();
         break;
+      case '🎯 Kilo Code Integration':
+        await this.kiloCodeIntegration();
+        break;
       case '⚡ Full System Enhancement':
         await this.fullEnhancement();
         break;
       case '📊 Generate Reports':
         await this.generateReports();
         break;
-      case '🎯 Mission Control':
+      case '🎮 Mission Control':
         await this.missionControl();
         break;
       case '⚙️ System Configuration':
@@ -300,6 +306,18 @@ class MasterOrchestrator {
     report.next_steps.forEach(step => {
       console.log(chalk.white(`  • ${step}`));
     });
+  }
+
+  async kiloCodeIntegration() {
+    console.log(chalk.magenta.bold('🎯 KILO CODE INTEGRATION'));
+    
+    console.log(chalk.yellow('🚀 Setting up top-tier prompting system...'));
+    await this.kiloSetup.runSetup();
+    
+    console.log(chalk.green('\n✅ Kilo Code Integration Complete'));
+    console.log(chalk.cyan('📁 Configuration files created in .kilo/'));
+    console.log(chalk.blue('📚 Documentation available in .kilo/README.md'));
+    console.log(chalk.yellow('⚙️ Configure API keys in .env.kilo to activate'));
   }
 
   async systemConfiguration() {
