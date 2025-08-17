@@ -53,7 +53,12 @@
     "mcp-demo": "node mcp-enhanced/demo.js",
     "perf:analyze": "node --inspect performance-test.js",
     "perf:monitor": "node monitor.js",
-    "perf:benchmark": "node benchmark.js"
+    "perf:benchmark": "node benchmark.js",
+    "deploy:check": "node check-deployment.js",
+    "deploy:setup": "pwsh -File deploy.ps1 -Action setup",
+    "deploy:staging": "pwsh -File deploy.ps1 -Action deploy -Environment staging",
+    "deploy:production": "pwsh -File deploy.ps1 -Action deploy -Environment production",
+    "deploy:runner": "pwsh -File deploy.ps1 -Action runner"
   },
   "bin": {
     "gemini": "bundle/gemini.js"
