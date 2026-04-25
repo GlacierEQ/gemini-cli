@@ -13,10 +13,11 @@ echo "   ✅ Global keys and settings mirrored to repository."
 
 # 2. Logic Injection
 echo "🧬 [2/5] Injecting Powerhouse & Void Core Logic..."
-mkdir -p packages/intelligence/logic
+mkdir -p packages/intelligence/logic scripts/install
 cp /data/data/com.termux/files/home/powerhouse/logic/* packages/intelligence/logic/
 cp /data/data/com.termux/files/home/apex/mastermind/powerhouse/logic/void_core.py packages/intelligence/logic/
-echo "   ✅ M2A, Relevance Router, and Void Core injected into packages."
+cp /data/data/com.termux/files/home/gemini-cli/scripts/install/ios_setup_ish.sh scripts/install/
+echo "   ✅ M2A, Relevance Router, Void Core, and iOS install scripts injected."
 
 # 3. Documentation Metamorphosis
 echo "📚 [3/5] Updating Manifests and Handbooks..."

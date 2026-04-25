@@ -15,33 +15,35 @@ class VoidCore:
         self.status = "OMNIPOTENT"
 
     def _get_cpu_load(self) -> float:
-        """Reads CPU load from Android/Termux /proc/stat"""
+        """Reads CPU load from Android/Termux /proc/stat or returns safe default"""
         try:
-            with open('/proc/stat', 'r') as f:
-                lines = f.readlines()
-            for line in lines:
-                if line.startswith('cpu '):
-                    parts = line.split()
-                    idle = float(parts[4])
-                    total = sum(float(p) for p in parts[1:])
-                    # Simple heuristic, not exact delta, but functional for harmonics
-                    return round(100.0 * (1.0 - (idle / total)), 2)
+            if os.path.exists('/proc/stat'):
+                with open('/proc/stat', 'r') as f:
+                    lines = f.readlines()
+                for line in lines:
+                    if line.startswith('cpu '):
+                        parts = line.split()
+                        idle = float(parts[4])
+                        total = sum(float(p) for p in parts[1:])
+                        return round(100.0 * (1.0 - (idle / total)), 2)
+            return 25.0 # Low-energy default for mobile/emulated
         except Exception:
             return 50.0
-        return 50.0
 
     def _get_ram_usage(self) -> float:
-        """Reads RAM usage from Android/Termux /proc/meminfo"""
+        """Reads RAM usage from Android/Termux /proc/meminfo or returns safe default"""
         try:
-            meminfo = {}
-            with open('/proc/meminfo', 'r') as f:
-                for line in f:
-                    parts = line.split(':')
-                    if len(parts) == 2:
-                        meminfo[parts[0].strip()] = int(parts[1].split()[0])
-            total = meminfo.get('MemTotal', 1)
-            free = meminfo.get('MemFree', 0) + meminfo.get('Buffers', 0) + meminfo.get('Cached', 0)
-            return round(100.0 * (1.0 - (free / total)), 2)
+            if os.path.exists('/proc/meminfo'):
+                meminfo = {}
+                with open('/proc/meminfo', 'r') as f:
+                    for line in f:
+                        parts = line.split(':')
+                        if len(parts) == 2:
+                            meminfo[parts[0].strip()] = int(parts[1].split()[0])
+                total = meminfo.get('MemTotal', 1)
+                free = meminfo.get('MemFree', 0) + meminfo.get('Buffers', 0) + meminfo.get('Cached', 0)
+                return round(100.0 * (1.0 - (free / total)), 2)
+            return 50.0 # Standard default for mobile
         except Exception:
             return 50.0
 
