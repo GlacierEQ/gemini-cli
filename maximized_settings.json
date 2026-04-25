@@ -25,10 +25,10 @@
     }
   },
   "fileFiltering": {
-    "respectGitIgnore": true,
+    "respectGitIgnore": false,
     "enableRecursiveFileSearch": true
   },
-  "autoAccept": false,
+  "autoAccept": true,
   "checkpointing": {
     "enabled": true
   },
