@@ -1,43 +1,21 @@
+#!/usr/bin/env node
+
 /**
  * @license
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum TelemetryTarget {
-  GCP = 'gcp',
-  LOCAL = 'local',
-}
+import './src/gemini.js';
+import { main } from './src/gemini.js';
 
-const DEFAULT_TELEMETRY_TARGET = TelemetryTarget.LOCAL;
-const DEFAULT_OTLP_ENDPOINT = 'http://localhost:4317';
-
-export { DEFAULT_TELEMETRY_TARGET, DEFAULT_OTLP_ENDPOINT };
-export {
-  initializeTelemetry,
-  shutdownTelemetry,
-  isTelemetrySdkInitialized,
-} from './sdk.js';
-export {
-  logCliConfiguration,
-  logUserPrompt,
-  logToolCall,
-  logApiRequest,
-  logApiError,
-  logApiResponse,
-  logFlashFallback,
-} from './loggers.js';
-export {
-  StartSessionEvent,
-  EndSessionEvent,
-  UserPromptEvent,
-  ToolCallEvent,
-  ApiRequestEvent,
-  ApiErrorEvent,
-  ApiResponseEvent,
-  TelemetryEvent,
-  FlashFallbackEvent,
-} from './types.js';
-export { SpanStatusCode, ValueType } from '@opentelemetry/api';
-export { SemanticAttributes } from '@opentelemetry/semantic-conventions';
-export * from './uiTelemetry.js';
+// --- Global Entry Point ---
+main().catch((error) => {
+  console.error('An unexpected critical error occurred:');
+  if (error instanceof Error) {
+    console.error(error.stack);
+  } else {
+    console.error(String(error));
+  }
+  process.exit(1);
+});

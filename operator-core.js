@@ -136,16 +136,17 @@ class EnhancedGeminiCLI {
   }
 
   async storeMemory(query, response) {
-    // Store in Pinecone for persistent memory
+    // Store in Aspen Grove AG.INDEX and apply TokenOptimizer
     try {
-      const index = this.pinecone.index('gemini-memory');
-      await index.upsert([{
-        id: Date.now().toString(),
-        values: Array(1536).fill(0.1), // Placeholder embedding
-        metadata: { query, response, timestamp: new Date().toISOString() }
-      }]);
+      console.log(chalk.cyan('🌲 Linking to Aspen Grove Memory & Token Optimizer...'));
+      const { exec } = await import('child_process');
+      const util = await import('util');
+      const execPromise = util.promisify(exec);
+      const { stdout } = await execPromise('python3 /data/data/com.termux/files/home/gemini/activate_memory_savings.py');
+      console.log(chalk.green('✅ AG.INDEX Node Synchronized'));
+      console.log(chalk.gray(stdout));
     } catch (error) {
-      console.log(chalk.yellow('⚠️ Memory storage failed, continuing...'));
+      console.log(chalk.yellow('⚠️ Aspen Grove Memory storage failed, continuing...'));
     }
   }
 

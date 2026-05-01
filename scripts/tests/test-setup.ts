@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { vi } from 'vitest';
+import { setSimulate429 } from './src/utils/testUtils.js';
 
-vi.mock('fs', () => ({
-  ...vi.importActual('fs'),
-  appendFileSync: vi.fn(),
-}));
+// Disable 429 simulation globally for all tests
+setSimulate429(false);

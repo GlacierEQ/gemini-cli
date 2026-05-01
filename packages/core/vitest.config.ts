@@ -4,13 +4,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/// <reference types="vitest" />
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)', 'config.test.ts'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**'],
+    environment: 'jsdom',
+    globals: true,
     reporters: ['default', 'junit'],
     silent: true,
-    setupFiles: ['./test-setup.ts'],
     outputFile: {
       junit: 'junit.xml',
     },

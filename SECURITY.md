@@ -1,23 +1,11 @@
 # Security Policy
 
-## Reporting Security Vulnerabilities
+## Supported Versions
 
-Please report security vulnerabilities to security@example.com
+Latest major/minor version is supported only for security updates.
 
-## Security Measures
+## Reporting a Vulnerability
 
-- All dependencies are regularly updated
-- Code is scanned for vulnerabilities
-- Secrets are stored in environment variables
-- Input validation is implemented
-- HTTPS is enforced in production
-
-## Security Checklist
-
-- [ ] No hardcoded secrets
-- [ ] Input sanitization
-- [ ] SQL injection prevention
-- [ ] XSS protection
-- [ ] CSRF protection
-- [ ] Rate limiting
-- [ ] Authentication & authorization
+To report a security vulnerability, please use the
+[Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.

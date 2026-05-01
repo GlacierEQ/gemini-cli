@@ -1,53 +1,57 @@
-# API keys and secrets
+# APEX Security - Never commit these
 .env
-.env~
+*.key
+*.pem
+apex_mcp_config.json
+config.json
 
-# gemini-cli settings
-.gemini/
-!gemini/config.yaml
-
-# Note: .gemini-clipboard/ is NOT in gitignore so Gemini can access pasted images
-
-# Dependency directory
-node_modules
-bower_components
-
-# Editors
-.idea
-*.iml
-
-# OS metadata
-.DS_Store
-Thumbs.db
-
-# TypeScript build info files
-*.tsbuildinfo
-
-# Ignore built ts files
-dist
-
-# Docker folder to help skip auth refreshes
-.docker
-
-bundle
-
-# Test report files
-junit.xml
-packages/*/coverage/
-
-# Generated files
-packages/cli/src/generated/
-.integration-tests/
-packages/vscode-ide-companion/*.vsix
-
-# Coders in Flow
-.codersinflow
-.vscode
-
-# Coders in Flow
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
 .venv
-.codex
-out
-*.vsix
-.claude
-CLAUDE.md
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets & Keys
+secrets/
+*.secret
+api_keys.txt
+
+# OS
+Thumbs.db
+.Trash-*
+
+# MCP Generated
+mcp_*.log
+server_*.pid
+bundle/
+node_modules/
+dist/

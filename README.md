@@ -1,327 +1,47 @@
-# Gemini CLI
+# KILO CODE INTEGRATION
 
-[![Gemini CLI CI](https://github.com/GlacierEQ/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/GlacierEQ/gemini-cli/actions/workflows/ci.yml)
-[![Enhanced CI/CD](https://github.com/GlacierEQ/gemini-cli/actions/workflows/enhanced-ci.yml/badge.svg)](https://github.com/GlacierEQ/gemini-cli/actions/workflows/enhanced-ci.yml)
-[![Self-Hosted Runner](https://img.shields.io/badge/self--hosted-runner-success)](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners)
+## Overview
+Military-grade prompting system with quantum optimization capabilities.
 
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+## Setup
+1. Configure API keys in `.env.kilo`
+2. Customize settings in `.kilo/configs/main.json`
+3. Run connection test: `node .kilo/test-connections.js`
 
-This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows.
+## Usage
+```bash
+# Run integration
+node .kilo/run-integration.js [type] [format]
 
-With the Gemini CLI you can:
+# Test connections
+node .kilo/test-connections.js
 
-- Query and edit large codebases in and beyond Gemini's 1M token context window.
-- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
-  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
-  tool, built into Gemini.
-
-[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
-
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
-
-This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows.
-
-With the Gemini CLI you can:
-
-- Query and edit large codebases in and beyond Gemini's 1M token context window.
-- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
-  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
-  tool, built into Gemini.
-
-## Table of Contents
-
-- [Quickstart](#quickstart)
-- [Development](#development)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Running Tests](#running-tests)
-- [CI/CD Pipeline](#cicd-pipeline)
-  - [Overview](#overview)
-  - [Workflow Details](#workflow-details)
-  - [Self-Hosted Runner Setup](#self-hosted-runner-setup)
-  - [Environment Variables](#environment-variables)
-  - [Secrets Management](#secrets-management)
-- [Contributing](#contributing)
-- [License](#license)
-
-## CI/CD Pipeline
-
-### Overview
-
-This project uses GitHub Actions for CI/CD with an enhanced workflow that includes:
-
-- Automated testing across multiple Node.js versions and operating systems
-- Security scanning and dependency checks
-- Automated publishing to npm
-- GitHub Releases integration
-- Slack notifications
-- Support for self-hosted runners
-
-### Workflow Details
-
-The main workflow is defined in `.github/workflows/enhanced-ci.yml` and includes the following jobs:
-
-1. **Lint and Format**
-   - Checks code formatting
-   - Runs linters
-   - Verifies TypeScript types
-
-2. **Test**
-   - Runs unit and integration tests
-   - Tests across multiple Node.js versions (20.x, 22.x, 24.x)
-   - Tests on multiple operating systems (Ubuntu, Windows, macOS)
-   - Generates test coverage reports
-
-3. **Security Scan**
-   - Runs npm audit
-   - Performs dependency review
-   - Checks for known vulnerabilities
-
-4. **Build and Publish**
-   - Builds the project
-   - Publishes to npm (on release)
-   - Creates GitHub releases (on tag)
-
-### Self-Hosted Runner Setup
-
-For improved performance and control, you can set up self-hosted runners. We provide a PowerShell script to automate the setup on Windows machines.
-
-#### Prerequisites
-
-- Windows 10/11 or Windows Server 2019/2022
-- PowerShell 5.1 or later
-- Administrator privileges
-- GitHub Personal Access Token (PAT) with `admin:org` scope
-
-#### Installation
-
-1. **Clone the repository** (if not already done):
-   ```powershell
-   git clone https://github.com/GlacierEQ/gemini-cli.git
-   cd gemini-cli
-   ```
-
-2. **Set your GitHub PAT** (replace `YOUR_GITHUB_PAT` with your actual token):
-   ```powershell
-   $env:GITHUB_PAT = 'YOUR_GITHUB_PAT'
-   ```
-
-3. **Run the setup script** (as Administrator):
-   ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force
-   .\scripts\setup-self-hosted-runner.ps1 -RunnerName "my-runner" -RunnerLabels "windows,self-hosted,x64"
-   ```
-
-#### Configuration Options
-
-- `-RunnerName`: Name for the runner (default: computer name + "-runner")
-- `-RunnerGroup`: Runner group to add the runner to (default: "Default")
-- `-RunnerLabels`: Comma-separated list of labels (default: "self-hosted,Windows,X64")
-- `-RunnerWorkFolder`: Working directory for the runner (default: "_work")
-- `-ConfigureOnly`: Only configure an existing runner (don't download)
-- `-Uninstall`: Remove the runner and clean up
-
-#### Verifying the Installation
-
-1. Check the runner service status:
-   ```powershell
-   Get-Service -Name "GitHubActionsRunner"
-   ```
-
-2. View runner logs:
-   ```
-   Get-Content -Path "C:\actions-runner\_diag\*.log" -Tail 50
-   ```
-
-### Environment Variables
-
-The following environment variables are used by the CI/CD pipeline:
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NODE_VERSION` | No | Default Node.js version (default: 20) |
-| `REGISTRY` | No | Container registry URL (default: ghcr.io) |
-| `IMAGE_NAME` | No | Container image name (default: repository name) |
-
-### Secrets Management
-
-The following secrets must be configured in your GitHub repository:
-
-| Secret | Required For | Description |
-|--------|--------------|-------------|
-| `NPM_TOKEN` | Publishing | npm authentication token |
-| `GITHUB_TOKEN` | Auto-generated | GitHub token for workflow permissions |
-| `SLACK_WEBHOOK_URL` | Notifications | Slack webhook URL for notifications |
-
-## Quickstart
-
-You have two options to install Gemini CLI.
-
-### With Node
-
-1. **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
-2. **Run the CLI:** Execute the following command in your terminal:
-
-   ```bash
-   npx https://github.com/google-gemini/gemini-cli
-   ```
-
-   Or install it with:
-
-   ```bash
-   npm install -g @google/gemini-cli
-   ```
-
-   Then, run the CLI from anywhere:
-
-   ```bash
-   gemini
-   ```
-
-### With Homebrew
-
-1. **Prerequisites:** Ensure you have [Homebrew](https://brew.sh/) installed.
-2. **Install the CLI** Execute the following command in your terminal:
-
-   ```bash
-   brew install gemini-cli
-   ```
-
-   Then, run the CLI from anywhere:
-
-   ```bash
-   gemini
-   ```
-
-### Common Configuration steps
-
-3. **Pick a color theme**
-4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
-
-You are now ready to use the Gemini CLI!
-
-### Use a Gemini API key:
-
-The Gemini API provides a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
-
-1. Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key.
-
-   ```bash
-   export GEMINI_API_KEY="YOUR_API_KEY"
-   ```
-
-3. (Optionally) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
-
-### Use a Vertex AI API key:
-
-The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) using express mode for Gemini 2.5 Pro, control over which model you use, and access to higher rate limits with a billing account:
-
-1. Generate a key from [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys).
-2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key and set GOOGLE_GENAI_USE_VERTEXAI to true
-
-   ```bash
-   export GOOGLE_API_KEY="YOUR_API_KEY"
-   export GOOGLE_GENAI_USE_VERTEXAI=true
-   ```
-
-3. (Optionally) Add a billing account on your project to get access to [higher usage limits](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
-
-For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
-
-## Examples
-
-Once the CLI is running, you can start interacting with Gemini from your shell.
-
-You can start a project from a new directory:
-
-```sh
-cd new-project/
-gemini
-> Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
+# Generate optimized prompt
+node kilo-integration.js
 ```
 
-Or work with an existing project:
+## Templates
+- `system_base` - Core system prompt
+- `user_optimized` - Optimized user prompt
+- `code_architect` - Code generation
+- `data_analyst` - Data analysis
+- `security_auditor` - Security auditing
 
-```sh
-git clone https://github.com/google-gemini/gemini-cli
-cd gemini-cli
-gemini
-> Give me a summary of all of the changes that went in yesterday
-```
+## Configuration
+Edit `.kilo/configs/main.json` for:
+- Provider settings
+- Optimization levels
+- Security parameters
+- Rate limits
 
-### Next steps
+## Security
+- All API keys stored in environment variables
+- AES-256 encryption for sensitive data
+- Automatic key rotation every 30 days
+- Rate limiting and monitoring
 
-- Learn how to [contribute to or build from the source](./CONTRIBUTING.md).
-- Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- If you encounter any issues, review the **[troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-- Check out our **[Official Roadmap](./ROADMAP.md)**
-
-### Troubleshooting
-
-Head over to the [troubleshooting guide](docs/troubleshooting.md) if you're
-having issues.
-
-## Popular tasks
-
-### Explore a new codebase
-
-Start by `cd`ing into an existing or newly-cloned repository and running `gemini`.
-
-```text
-> Describe the main pieces of this system's architecture.
-```
-
-```text
-> What security mechanisms are in place?
-```
-
-### Work with your existing code
-
-```text
-> Implement a first draft for GitHub issue #123.
-```
-
-```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
-```
-
-### Automate your workflows
-
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
-
-```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
-```
-
-```text
-> Organize my PDF invoices by month of expenditure.
-```
-
-### Uninstall
-
-Head over to the [Uninstall](docs/Uninstall.md) guide for uninstallation instructions.
-
-## Terms of Service and Privacy Notice
-
-For details on the terms of service and privacy notice applicable to your use of Gemini CLI, see the [Terms of Service and Privacy Notice](./docs/tos-privacy.md).
+## Monitoring
+- Real-time performance metrics
+- Cost tracking and alerts
+- Error monitoring and reporting
+- Automated failover testing

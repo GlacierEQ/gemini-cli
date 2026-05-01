@@ -1,55 +1,38 @@
-# Gemini CLI Core
+# Welcome to Gemini CLI documentation
 
-Gemini CLI's core package (`packages/core`) is the backend portion of Gemini CLI, handling communication with the Gemini API, managing tools, and processing requests sent from `packages/cli`. For a general overview of Gemini CLI, see the [main documentation page](../index.md).
+This documentation provides a comprehensive guide to installing, using, and developing Gemini CLI. This tool lets you interact with Gemini models through a command-line interface.
 
-## Navigating this section
+## Overview
 
-- **[Core tools API](./tools-api.md):** Information on how tools are defined, registered, and used by the core.
-- **[Memory Import Processor](./memport.md):** Documentation for the modular GEMINI.md import feature using @file.md syntax.
+Gemini CLI brings the capabilities of Gemini models to your terminal in an interactive Read-Eval-Print Loop (REPL) environment. Gemini CLI consists of a client-side application (`packages/cli`) that communicates with a local server (`packages/core`), which in turn manages requests to the Gemini API and its AI models. Gemini CLI also contains a variety of tools for tasks such as performing file system operations, running shells, and web fetching, which are managed by `packages/core`.
 
-## Role of the core
+## Navigating the documentation
 
-While the `packages/cli` portion of Gemini CLI provides the user interface, `packages/core` is responsible for:
+This documentation is organized into the following sections:
 
-- **Gemini API interaction:** Securely communicating with the Google Gemini API, sending user prompts, and receiving model responses.
-- **Prompt engineering:** Constructing effective prompts for the Gemini model, potentially incorporating conversation history, tool definitions, and instructional context from `GEMINI.md` files.
-- **Tool management & orchestration:**
-  - Registering available tools (e.g., file system tools, shell command execution).
-  - Interpreting tool use requests from the Gemini model.
-  - Executing the requested tools with the provided arguments.
-  - Returning tool execution results to the Gemini model for further processing.
-- **Session and state management:** Keeping track of the conversation state, including history and any relevant context required for coherent interactions.
-- **Configuration:** Managing core-specific configurations, such as API key access, model selection, and tool settings.
+- **[Execution and Deployment](./deployment.md):** Information for running Gemini CLI.
+- **[Architecture Overview](./architecture.md):** Understand the high-level design of Gemini CLI, including its components and how they interact.
+- **CLI Usage:** Documentation for `packages/cli`.
+  - **[CLI Introduction](./cli/index.md):** Overview of the command-line interface.
+  - **[Commands](./cli/commands.md):** Description of available CLI commands.
+  - **[Configuration](./cli/configuration.md):** Information on configuring the CLI.
+  - **[Checkpointing](./checkpointing.md):** Documentation for the checkpointing feature.
+  - **[Extensions](./extension.md):** How to extend the CLI with new functionality.
+  - **[Telemetry](./telemetry.md):** Overview of telemetry in the CLI.
+- **Core Details:** Documentation for `packages/core`.
+  - **[Core Introduction](./core/index.md):** Overview of the core component.
+  - **[Tools API](./core/tools-api.md):** Information on how the core manages and exposes tools.
+- **Tools:**
+  - **[Tools Overview](./tools/index.md):** Overview of the available tools.
+  - **[File System Tools](./tools/file-system.md):** Documentation for the `read_file` and `write_file` tools.
+  - **[Multi-File Read Tool](./tools/multi-file.md):** Documentation for the `read_many_files` tool.
+  - **[Shell Tool](./tools/shell.md):** Documentation for the `run_shell_command` tool.
+  - **[Web Fetch Tool](./tools/web-fetch.md):** Documentation for the `web_fetch` tool.
+  - **[Web Search Tool](./tools/web-search.md):** Documentation for the `google_web_search` tool.
+  - **[Memory Tool](./tools/memory.md):** Documentation for the `save_memory` tool.
+- **[Contributing & Development Guide](../CONTRIBUTING.md):** Information for contributors and developers, including setup, building, testing, and coding conventions.
+- **[NPM Workspaces and Publishing](./npm.md):** Details on how the project's packages are managed and published.
+- **[Troubleshooting Guide](./troubleshooting.md):** Find solutions to common problems and FAQs.
+- **[Terms of Service and Privacy Notice](./tos-privacy.md):** Information on the terms of service and privacy notices applicable to your use of Gemini CLI.
 
-## Security considerations
-
-The core plays a vital role in security:
-
-- **API key management:** It handles the `GEMINI_API_KEY` and ensures it's used securely when communicating with the Gemini API.
-- **Tool execution:** When tools interact with the local system (e.g., `run_shell_command`), the core (and its underlying tool implementations) must do so with appropriate caution, often involving sandboxing mechanisms to prevent unintended modifications.
-
-## Chat history compression
-
-To ensure that long conversations don't exceed the token limits of the Gemini model, the core includes a chat history compression feature.
-
-When a conversation approaches the token limit for the configured model, the core automatically compresses the conversation history before sending it to the model. This compression is designed to be lossless in terms of the information conveyed, but it reduces the overall number of tokens used.
-
-You can find the token limits for each model in the [Google AI documentation](https://ai.google.dev/gemini-api/docs/models).
-
-## Model fallback
-
-Gemini CLI includes a model fallback mechanism to ensure that you can continue to use the CLI even if the default "pro" model is rate-limited.
-
-If you are using the default "pro" model and the CLI detects that you are being rate-limited, it automatically switches to the "flash" model for the current session. This allows you to continue working without interruption.
-
-## File discovery service
-
-The file discovery service is responsible for finding files in the project that are relevant to the current context. It is used by the `@` command and other tools that need to access files.
-
-## Memory discovery service
-
-The memory discovery service is responsible for finding and loading the `GEMINI.md` files that provide context to the model. It searches for these files in a hierarchical manner, starting from the current working directory and moving up to the project root and the user's home directory. It also searches in subdirectories.
-
-This allows you to have global, project-level, and component-level context files, which are all combined to provide the model with the most relevant information.
-
-You can use the [`/memory` command](../cli/commands.md) to `show`, `add`, and `refresh` the content of loaded `GEMINI.md` files.
+We hope this documentation helps you make the most of the Gemini CLI!

@@ -1,50 +1,33 @@
-FROM docker.io/library/node:20-slim
+FROM node:16-alpine
+LABEL maintainer="Postman Labs <help@postman.com>"
 
-ARG SANDBOX_NAME="gemini-cli-sandbox"
-ARG CLI_VERSION_ARG
-ENV SANDBOX="$SANDBOX_NAME"
-ENV CLI_VERSION=$CLI_VERSION_ARG
+ARG NEWMAN_VERSION
 
-# install minimal set of packages, then clean up
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  python3 \
-  make \
-  g++ \
-  man-db \
-  curl \
-  dnsutils \
-  less \
-  jq \
-  bc \
-  gh \
-  git \
-  unzip \
-  rsync \
-  ripgrep \
-  procps \
-  psmisc \
-  lsof \
-  socat \
-  ca-certificates \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV LC_ALL="en_US.UTF-8" LANG="en_US.UTF-8" LANGUAGE="en_US.UTF-8" ALPINE_NODE_REPO="oznu/alpine-node"
 
-# set up npm global package folder under /usr/local/share
-# give it to non-root user node, already set up in base image
-RUN mkdir -p /usr/local/share/npm-global \
-  && chown -R node:node /usr/local/share/npm-global
-ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
-ENV PATH=$PATH:/usr/local/share/npm-global/bin
+# Bail out early if NODE_VERSION is not provided
+RUN if [ ! $(echo $NEWMAN_VERSION | grep -oE "^[0-9]+\.[0-9]+\.[0-9]+$") ]; then \
+        echo "\033[0;31mA valid semver Newman version is required in the NEWMAN_VERSION build-arg\033[0m"; \
+        exit 1; \
+    fi && \
+    # Install Newman globally
+    npm install --global newman@${NEWMAN_VERSION};
 
-# switch to non-root user node
-USER node
+# Set workdir to /etc/newman
+# When running the image, mount the directory containing your collection to this location
+#
+# docker run -v <path to collections directory>:/etc/newman ...
+#
+# In case you mount your collections directory to a different location, you will need to give absolute paths to any
+# collection, environment files you want to pass to newman, and if you want newman reports to be saved to your disk.
+# Or you can change the workdir by using the -w or --workdir flag
+WORKDIR /etc/newman
 
-# install gemini-cli and clean up
-COPY packages/cli/dist/google-gemini-cli-*.tgz /usr/local/share/npm-global/gemini-cli.tgz
-COPY packages/core/dist/google-gemini-cli-core-*.tgz /usr/local/share/npm-global/gemini-core.tgz
-RUN npm install -g /usr/local/share/npm-global/gemini-cli.tgz /usr/local/share/npm-global/gemini-core.tgz \
-  && npm cache clean --force \
-  && rm -f /usr/local/share/npm-global/gemini-{cli,core}.tgz
-
-# default entrypoint when none specified
-CMD ["gemini"]
+# Set newman as the default container command
+# Now you can run the container via
+#
+# docker run -v /home/collections:/etc/newman -t postman/newman_alpine run YourCollection.json.postman_collection \
+#                                                                        -e YourEnvironment.postman_environment \
+#                                                                        -H newman_report.html
+ENTRYPOINT ["newman"]
